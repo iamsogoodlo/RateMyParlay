@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parlay Builder</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .parlay-leg {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .parlay-leg input {
+            padding: 5px;
+            margin-right: 10px;
+        }
+
+        .add-button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .add-button:hover {
+            background-color: #45a049;
+        }
+
+        .result {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>Parlay Builder</h1>
+    <div id="parlay-legs">
+        <!-- Legs will be added here dynamically -->
+    </div>
+    <button class="add-button" onclick="addLeg()">+</button>
+    <div class="result" id="result">
+        Estimated Value: $0.00 | Estimated Profit: $0.00
+    </div>
+
+    <script>
+        let legCount = 0;
+        const odds = [];
+
+        function addLeg() {
+            const container = document.getElementById('parlay-legs');
+
+            const legDiv = document.createElement('div');
+            legDiv.className = 'parlay-leg';
+
+            const inputOdds = document.createElement('input');
+            inputOdds.type = 'number';
+            inputOdds.placeholder = `Odds for Leg ${legCount + 1}`;
+            inputOdds.name = `odds_${legCount + 1}`;
+            inputOdds.oninput = updateResult;
+
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remove';
+            removeButton.className = 'add-button';
+            removeButton.style.backgroundColor = '#f44336';
+            removeButton.style.marginLeft = '10px';
+            removeButton.onclick = () => {
+                legDiv.remove();
+                updateResult();
+            };
+
+            legDiv.appendChild(inputOdds);
+            legDiv.appendChild(removeButton);
+
+            container.appendChild(legDiv);
+            legCount++;
+        }
+
+        function updateResult() {
+            const inputs = document.querySelectorAll('#parlay-legs input[type="number"]');
+            let estimatedValue = 1;
+
+            inputs.forEach(input => {
+                const value = parseFloat(input.value);
+                if (!isNaN(value)) {
+                    estimatedValue *= (value / 100) + 1;
+                }
+            });
+
+            const estimatedProfit = (estimatedValue - 1) * 100;
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = `Estimated Value: $${estimatedValue.toFixed(2)} | Estimated Profit: $${estimatedProfit.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
