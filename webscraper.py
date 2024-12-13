@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import pandas as pd 
 import requests
 
+bet_types = ["Over/Under", "Moneyline", "Player Props"]
 def player_name(first_name, last_name):
   first_name = first_name.replace(" ", "").lower()
   last_name = last_name.replace(" ", "").lower()
@@ -92,8 +93,75 @@ def scrape_player_stats(url):
                                     "FTA", "FT%", "ORB", "DRB", "TRB", "AST", "STL", "BLK", "TOV", "PF", "PTS", "GmSc", "+/-"])
   return df 
 
+def get_odds():
+    odds = input()
+    if odds > 0:
+        odds = abs(odds)
+    else: 
+        pass
 
+def calculate_ev(odds, amt_wagered, profit_on_win, profit_on_loss):
+    if odds > 0:
+        implied_prob = odds / (odds + 100)
+    else:
+        implied_prob = 100 / (abs(odds) + 100)
+    if profit_on_win is None:
+        profit_on_win = amt_wagered * (odds / 100 if odds > 0 else 100 / abs(odds))
+    if profit_on_loss is None:
+        profit_on_loss = -amt_wagered
+    expected_profit = (implied_prob * profit_on_win) + ((1 - implied_prob) * profit_on_loss)
+    expected_value = expected_profit
+
+    return {
+        "implied_probability": implied_prob,
+        "expected_profit": expected_profit,
+        "expected_value": expected_value
+    }
+
+def take_leg(bet_type, df):
+    if bet_type == bet_types[1]:
+        over_under = input("Was your stat an over or under? (over/under): ").lower() #in dropdown menu
+        if over_under == "over":
+            comparison_operator = ">"
+        elif over_under == "under":
+            comparison_operator = "<"
+        else:
+            print("Invalid input for over/under. Please try again.")
+            return
+
+        stat = input("What stat was your bet? ").strip() #in dropdown menu
+        stat_number = float(input("What is the bet over/under number? ")) #in dropdown menu
+
+        times_true = 0
+
+        if stat not in df.columns:
+            print(f"Stat '{stat}' not found in the player stats dataframe.")
+            return
+
+        for index, row in df.iterrows():
+            player_stat = float(row[stat])
+            if comparison_operator == ">" and player_stat > stat_number:
+                times_true += 1
+            elif comparison_operator == "<" and player_stat < stat_number:
+                times_true += 1
+
+        print(f"The condition was met {times_true} times.")
+
+        return times_true
+    else:
+        print("Bet type not recognized or not supported.")
+        return
+
+
+def rate_leg(bet_type):
+    if take_leg() >= 3:
+        return "Good"
+    else: 
+        return "Bad"
+
+## do in a dropdown menu 
 name = player_name("Cade", "Cunningham")
 url = create_url_player(name)
 df = scrape_player_stats(url)
-print(df)
+take = take_leg(bet_types[1], df)
+print(take)
