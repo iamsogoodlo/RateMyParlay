@@ -1,0 +1,12 @@
+## Use a neural network or regression model to predict possibilities of different bets 
+- Requires scraping whole season data 
+- Downloading as csv
+- Using pytorch
+
+
+PRIORITIZE!!!!!!!!!!!
+## Programming the frontend and integrate flask
+- Use flask to connected frontend inputs into backend calculations 
+- Make site prettier using css 
+- Make inputs in dropdowns / other methods 
+
