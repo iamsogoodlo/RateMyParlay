@@ -3,101 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Parlay Builder</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-
-        .parlay-leg {
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-        }
-
-        .parlay-leg input {
-            padding: 5px;
-            margin-right: 10px;
-        }
-
-        .add-button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-
-        .add-button:hover {
-            background-color: #45a049;
-        }
-
-        .result {
-            margin-top: 20px;
-            font-weight: bold;
-        }
-    </style>
+    <title>Sports Betting Scraper</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <h1>Parlay Builder</h1>
-    <div id="parlay-legs">
-        <!-- Legs will be added here dynamically -->
-    </div>
-    <button class="add-button" onclick="addLeg()">+</button>
-    <div class="result" id="result">
-        Estimated Value: $0.00 | Estimated Profit: $0.00
-    </div>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="index.html" class="logo">SportsBet Scraper</a>
+            <ul class="nav-links">
+                <li><a href="parlay-builder.html">Parlay Builder</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
 
-    <script>
-        let legCount = 0;
-        const odds = [];
+    <!-- Main Content -->
+    <header class="hero">
+        <div class="container">
+            <h1>Welcome to SportsBet Scraper</h1>
+            <p>Your one-stop destination for analyzing sports betting odds and building winning parlays.</p>
+            <a href="parlaybuilder.html" class="btn-primary">Start Building Parlays</a>
+        </div>
+    </header>
 
-        function addLeg() {
-            const container = document.getElementById('parlay-legs');
+    <!-- Features Section -->
+    <section id="features" class="features">
+        <div class="container">
+            <h2>Features</h2>
+            <div class="feature-list">
+                <div class="feature-item">
+                    <h3>Odds Aggregator</h3>
+                    <p>Compare odds across multiple sportsbooks in real-time.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Parlay Builder</h3>
+                    <p>Create and optimize parlays to maximize your potential winnings.</p>
+                </div>
+                <div class="feature-item">
+                    <h3>Betting Trends</h3>
+                    <p>Analyze market trends and data to make informed decisions.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-            const legDiv = document.createElement('div');
-            legDiv.className = 'parlay-leg';
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2>About Us</h2>
+            <p>SportsBet Scraper was created for enthusiasts who want to make smarter bets. We provide tools and insights to help you get an edge in sports betting.</p>
+        </div>
+    </section>
 
-            const inputOdds = document.createElement('input');
-            inputOdds.type = 'number';
-            inputOdds.placeholder = `Odds for Leg ${legCount + 1}`;
-            inputOdds.name = `odds_${legCount + 1}`;
-            inputOdds.oninput = updateResult;
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2>Contact Us</h2>
+            <p>Have questions or feedback? Reach out to us at <a href="mailto:support@sportsbet.com">support@sportsbet.com</a>.</p>
+        </div>
+    </section>
 
-            const removeButton = document.createElement('button');
-            removeButton.textContent = 'Remove';
-            removeButton.className = 'add-button';
-            removeButton.style.backgroundColor = '#f44336';
-            removeButton.style.marginLeft = '10px';
-            removeButton.onclick = () => {
-                legDiv.remove();
-                updateResult();
-            };
-
-            legDiv.appendChild(inputOdds);
-            legDiv.appendChild(removeButton);
-
-            container.appendChild(legDiv);
-            legCount++;
-        }
-
-        function updateResult() {
-            const inputs = document.querySelectorAll('#parlay-legs input[type="number"]');
-            let estimatedValue = 1;
-
-            inputs.forEach(input => {
-                const value = parseFloat(input.value);
-                if (!isNaN(value)) {
-                    estimatedValue *= (value / 100) + 1;
-                }
-            });
-
-            const estimatedProfit = (estimatedValue - 1) * 100;
-            const resultDiv = document.getElementById('result');
-            resultDiv.textContent = `Estimated Value: $${estimatedValue.toFixed(2)} | Estimated Profit: $${estimatedProfit.toFixed(2)}`;
-        }
-    </script>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 SportsBet Scraper. All rights reserved.</p>
+        </div>
+    </footer>
 </body>
 </html>
