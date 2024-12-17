@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Parlay Builder</title>
+</head>
+<body>
+    <h1>Parlay Builder</h1>
+    <div id="parlay-legs">
+        <!-- Legs will be added here dynamically -->
+    </div>
+    <button class="add-button" onclick="addLeg()">+</button>
+    <div class="result" id="result">
+        Estimated Value: $0.00 | Estimated Profit: $0.00
+    </div>
+
+    <script>
+        let legCount = 0;
+
+        function addLeg() {
+            const container = document.getElementById('parlay-legs');
+
+            const legDiv = document.createElement('div');
+            legDiv.className = 'parlay-leg';
+
+            // Dropdown for "Type of Bet"
+            const betTypeSelect = document.createElement('select');
+            betTypeSelect.name = `bet_type_${legCount + 1}`;
+            const betTypes = ['Team Props', 'Player Props'];
+            betTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                betTypeSelect.appendChild(option);
+            });
+
+            // Dropdown for "Team Name"
+            const teamNameInput = document.createElement('input');
+            teamNameInput.type = 'text';
+            teamNameInput.placeholder = 'Enter Team Name';
+            teamNameInput.name = `team_name_${legCount + 1}`;
+
+            // Dropdown for "Team Bet Type"
+            const teamBetTypeSelect = document.createElement('select');
+            teamBetTypeSelect.name = `team_bet_type_${legCount + 1}`;
+            const teamBetTypes = ['Moneyline', 'Spread', 'Total Points'];
+            teamBetTypes.forEach(type => {
+                const option = document.createElement('option');
+                option.value = type;
+                option.textContent = type;
+                teamBetTypeSelect.appendChild(option);
+            });
+
+            // Container for Over/Under input dynamically
+            const overUnderContainer = document.createElement('div');
+
+            teamBetTypeSelect.addEventListener('change', () => {
+                overUnderContainer.innerHTML = '';
+
+                if (teamBetTypeSelect.value === 'Spread' || teamBetTypeSelect.value === 'Total Points') {
+                    if (!document.querySelector(`#team_over_under_value_${legCount + 1}`)) {
+                        const overUnderValueInput = document.createElement('input');
+                        overUnderValueInput.type = 'number';
+                        overUnderValueInput.placeholder = 'Enter Over/Under Value';
+                        overUnderValueInput.name = `team_over_under_value_${legCount + 1}`;
+                        overUnderValueInput.id = `team_over_under_value_${legCount + 1}`;
+                        overUnderContainer.appendChild(overUnderValueInput);
+                    }
+                }
+            });
+
+            // Remove Over/Under form if Moneyline is selected
+            teamBetTypeSelect.addEventListener('change', () => {
+                if (teamBetTypeSelect.value === 'Moneyline') {
+                    overUnderContainer.innerHTML = '';
+                }
+            });
+
+            // Input for "Odds"
+            const inputOdds = document.createElement('input');
+            inputOdds.type = 'number';
+            inputOdds.placeholder = `Odds (+/-)`;
+            inputOdds.name = `odds_${legCount + 1}`;
+            inputOdds.oninput = updateResult;
+
+            // Remove button
+            const removeButton = document.createElement('button');
+            removeButton.textContent = 'Remove';
+            removeButton.className = 'add-button';
+            removeButton.style.backgroundColor = '#f44336';
+            removeButton.style.marginLeft = '10px';
+            removeButton.onclick = () => {
+                legDiv.remove();
+                updateResult();
+            };
+
+            // Append elements to the leg div
+            legDiv.appendChild(betTypeSelect);
+            legDiv.appendChild(teamNameInput);
+            legDiv.appendChild(teamBetTypeSelect);
+            legDiv.appendChild(overUnderContainer);
+            legDiv.appendChild(inputOdds);
+            legDiv.appendChild(removeButton);
+
+            // Append leg div to the container
+            container.appendChild(legDiv);
+            legCount++;
+        }
+
+        function updateResult() {
+            const inputs = document.querySelectorAll('#parlay-legs input[type="number"]');
+            let estimatedValue = 1;
+
+            inputs.forEach(input => {
+                const value = parseFloat(input.value);
+                if (!isNaN(value)) {
+                    estimatedValue *= (value / 100) + 1;
+                }
+            });
+
+            const estimatedProfit = (estimatedValue - 1) * 100;
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = `Estimated Value: $${estimatedValue.toFixed(2)} | Estimated Profit: $${estimatedProfit.toFixed(2)}`;
+        }
+    </script>
+</body>
+</html>
